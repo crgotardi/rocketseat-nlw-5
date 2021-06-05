@@ -46,6 +46,31 @@
   justify-content: center;
 }
 
+.currentEpisode {
+  text-align: center;
+
+  img {
+    border-radius: 1.5rem;
+  }
+
+  strong {
+    display: block;
+    margin-top: 2rem;
+    font: 600 1rem Lexend, sans-serif;
+    line-height: 1.75rem;
+    text-overflow: ellipsis;
+    overflow: hidden;
+  }
+
+  span {
+    display: block;
+    margin-top: 1rem;
+    opacity: 0.6;
+    line-height: 1.5rem;
+    font-size: .9rem;
+  }
+}
+
 .progress {
   display: flex;
   align-items: center;
@@ -81,12 +106,25 @@
     background: transparent;
     border: 0;
     font-size: 0;
+    transition: filter .2s;
+
+    &:disabled {
+      cursor: default;
+    }
+
+    &:hover:not(disabled) {
+      filter: brightness(0.8)
+    }
 
     &.playButton {
       height: 4rem;
       width: 4rem;
       border-radius: 1rem;
       background: var(--purple-400);
+
+      &:hover:not(disabled)  {
+        filter: brightness(0.95)
+      }
     }
   }
 }
