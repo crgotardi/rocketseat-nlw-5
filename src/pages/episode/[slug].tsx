@@ -1,12 +1,16 @@
+import styles from './episode.module.scss';
+import { api } from '../../services/api';
+
 import { GetStaticPaths, GetStaticProps } from 'next';
 import { useRouter } from 'next/router'
-import { api } from '../../services/api';
-import { format, parseISO } from "date-fns"
-import ptBR from "date-fns/locale/pt-BR"
-import { convertDurationToTimeString } from "../../utils/convertDurationToTimeString"
-import styles from './episode.module.scss';
+import Head from "next/head";
 import Image from 'next/image';
 import Link from 'next/link'
+import { format, parseISO } from "date-fns"
+import ptBR from "date-fns/locale/pt-BR"
+
+import { convertDurationToTimeString } from "../../utils/convertDurationToTimeString"
+import { PlayerContext, usePlayer } from '../../contexts/PlayerContext';
 
 type Episode = {
     id: string,
@@ -14,7 +18,7 @@ type Episode = {
     thumbnail: string,
     description: string
     members: string,
-    duration: string,
+    duration: number,
     durationAsString: string,
     publishedAt: string,
     url: string,
@@ -27,8 +31,13 @@ type EpisodeProp = {
 export default function Episode({episode}: EpisodeProp) {
     const router = useRouter();
 
+    const { play } = usePlayer();
+
     return (
         <div className={styles.episode}>
+            <Head>
+                <title>{episode.title} | Podcastr</title>
+            </Head>
             <div className={styles.thumbnailContainer}>
                 <Link href="/">
                     <button type="button">
@@ -41,7 +50,7 @@ export default function Episode({episode}: EpisodeProp) {
                     src={episode.thumbnail}
                     objectFit='cover'
                 />
-                <button type="button">
+                <button type="button" onClick={() => play(episode)}>
                     <img src="/play.svg" alt="Tocar episodio" />
                 </button>
             </div>
@@ -87,7 +96,8 @@ export const getStaticProps: GetStaticProps = async (ctx) => {
     const episode = {
         ...data,
         publishedAt: format(parseISO(data.published_at), 'd MMM yy', {locale: ptBR}),
-        durationAsString: convertDurationToTimeString(Number(data.file.duration))
+        durationAsString: convertDurationToTimeString(Number(data.file.duration)),
+        duration: Number(data.file.duration)
     }
 
     return {
