@@ -111,7 +111,7 @@ export function Player() {
 
         { episode && (
           <audio
-            src={episode?.file.url}
+            src={episode?.file?.url}
             ref={audioRef}
             loop={isLooping}
             onPlay={() => setPlayingState(true)}
